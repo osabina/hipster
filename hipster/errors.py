@@ -3,21 +3,23 @@
 from types import *
 from config import api_func
 
+
 def error_handler(fn):
     def wrapper(*args, **kwargs):
-        try: 
+        try:
             return fn(*args, **kwargs)
         except Exception as e:
             print(e)
     wrapper.__name__ = fn.__name__
     return wrapper
 
+
 @error_handler
 def check_arguments(fn_name, *args, **kwargs):
     params = {}
     if args:
         for x in args:
-            if type(x) != DictType: 
+            if type(x) != DictType:
                 raise TypeError(
                     "Illegal argument {0}: Only named arguments or dictionary allowed" \
                         .format(x))
@@ -25,7 +27,7 @@ def check_arguments(fn_name, *args, **kwargs):
             params.update(x)
     (lambda: params.update(kwargs) if kwargs else None)()
     _illegal = [x for x in params.keys() if x not in api_func[fn_name]['params']]
-    _missed  = [x for x in api_func[fn_name]['params'] \
+    _missed = [x for x in api_func[fn_name]['params'] \
                                             if x not in params.keys() \
                                             and x in api_func[fn_name]['required']]
     if _illegal or _missed:
@@ -38,25 +40,28 @@ def check_arguments(fn_name, *args, **kwargs):
         params = dict(zip(_keys, _val))
     return (lambda: params if params else {'format': 'json'})()
 
+
 class ArgumentError(Exception):
     def __init__(self, name, illegal, missed):
         self.illegal = illegal
-        self.missed  = missed
-        self._name   = name
+        self.missed = missed
+        self._name = name
+
     def __str__(self):
         return repr(
-            "ArgumentError: In function {0}: {1} {2})"\
+            "ArgumentError: In function {0}: {1} {2})" \
                 .format(self._name,
-                        (lambda: 'illegal arguments: {0},'\
+                        (lambda: 'illegal arguments: {0},' \
                             .format(self.illegal) if self.illegal else '')(),
-                        (lambda: 'missing required arguments: {0}'\
+                        (lambda: 'you miss required arguments: {0}' \
                             .format(self.missed) if self.missed else '')()))
+
 
 class ConnectionError(Exception):
     def __init__(self, e):
         self.e = e
+
     def __str__(self):
         return repr(
-            "Error: can't establish connection with API | {0}"\
+            "Error: can't established connection with api.hipchat.com | {0}" \
                 .format(self.e))
-

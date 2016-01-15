@@ -1,7 +1,8 @@
 #!/usr/bin/python
  # -*- coding: utf-8 -*-
 
-import json, urllib3
+import json
+import urllib3
 from config import api_func
 from errors import *
 try:
@@ -9,9 +10,11 @@ try:
 except:
     from urllib.parse import urlencode
 
+
 @error_handler
 def singleton_with_methods(class_):
     instances = {}
+
     def getinstance(*args, **kwargs):
         if class_ not in instances:
             instances[class_] = class_(*args, **kwargs)
@@ -25,13 +28,14 @@ def singleton_with_methods(class_):
         return instances[class_]
     return getinstance
 
+
 def call_api(method, dest):
     def decorator(fn):
         @error_handler
         def wrapper(self, *args, **kwargs):
             params = check_arguments(fn.__name__, *args, **kwargs)
             if params:
-                url = '{0}/{1}?auth_token={2}&{3}'\
+                url = '{0}/{1}?auth_token={2}&{3}' \
                     .format(self.API_URL, dest, self.AUTH_TOKEN,
                             urlencode(params))
                 try:
@@ -42,9 +46,9 @@ def call_api(method, dest):
                         req = proxy.request(method, url)
 
                     return {
-                        'status' : req.status,
-                        'data'   : json.loads(req.data)\
-                            if req.status == 200\
+                        'status': req.status,
+                        'data': json.loads(req.data) \
+                            if req.status == 200 \
                             else req.data
                         }
                 except Exception as e:
