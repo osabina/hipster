@@ -29,13 +29,9 @@ python setup.py install
 Instantiate::
 ```python
 from hipster import Hipster
-hipchat = Hipster(Your token)
-```
-
-If behind a proxy, use
-```python
-from hipster import Hipster
-hipchat = Hipster(Your token, Proxy Url)
+# Provide optional proxy url or alternate API url if you are behind a
+# proxy and/or have a self-hosted HipChat server, e.g.
+hipchat = Hipster(Your token, [[proxy=PROXY_URL], [api_url=API_URL]])
 ```
 
 Call API methods::
@@ -81,7 +77,4 @@ get_users_list()
 get_users_details()
 undelete_user()
 update_user_info()
-
-
-
 

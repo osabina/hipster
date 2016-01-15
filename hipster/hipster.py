@@ -9,15 +9,13 @@ try:
 except:
     from urllib.parse import urlencode
 
-API_URL = 'https://api.hipchat.com/v1'
-
 @error_handler
 def singleton_with_methods(class_):
     instances = {}
     def getinstance(*args, **kwargs):
         if class_ not in instances:
             instances[class_] = class_(*args, **kwargs)
-            instances[class_].__init__(args[0], args[1])
+            instances[class_].__init__(*args, **kwargs)
             for key in api_func:
                 _temp = (lambda **kwrgs: kwrgs)
                 _temp.__name__ = key
@@ -34,7 +32,8 @@ def call_api(method, dest):
             params = check_arguments(fn.__name__, *args, **kwargs)
             if params:
                 url = '{0}/{1}?auth_token={2}&{3}'\
-                    .format(API_URL, dest, self.AUTH_TOKEN, urlencode(params))
+                    .format(self.API_URL, dest, self.AUTH_TOKEN,
+                            urlencode(params))
                 try:
                     if None == self.PROXY:
                         req = urllib3.PoolManager().urlopen(method, url)
@@ -53,4 +52,3 @@ def call_api(method, dest):
             wrapper.__name__ = fn.__name__
         return wrapper
     return decorator
-
