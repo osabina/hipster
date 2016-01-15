@@ -40,16 +40,16 @@ def check_arguments(fn_name, *args, **kwargs):
 
 class ArgumentError(Exception):
     def __init__(self, name, illegal, missed):
-        self.illegal = illegal 
-        self.missed  = missed 
+        self.illegal = illegal
+        self.missed  = missed
         self._name   = name
     def __str__(self):
         return repr(
             "ArgumentError: In function {0}: {1} {2})"\
-                .format(self._name, 
+                .format(self._name,
                         (lambda: 'illegal arguments: {0},'\
-                            .format(self.illegal) if self.illegal else '')(), 
-                        (lambda: 'you miss required arguments: {0}'\
+                            .format(self.illegal) if self.illegal else '')(),
+                        (lambda: 'missing required arguments: {0}'\
                             .format(self.missed) if self.missed else '')()))
 
 class ConnectionError(Exception):
@@ -57,6 +57,6 @@ class ConnectionError(Exception):
         self.e = e
     def __str__(self):
         return repr(
-            "Error: can't established connection with api.hipchat.com | {0}"\
+            "Error: can't establish connection with API | {0}"\
                 .format(self.e))
 
